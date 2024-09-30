@@ -1,6 +1,6 @@
 rm cipher.txt
 rm output.txt
 
-g++ -o test1.o test1.cpp
+g++ -o SwapEncryption.o SwapEncryption.cpp
 
-./test1.o
+./SwapEncryption.o
