@@ -36,6 +36,21 @@
 
 using namespace std;
 
+bool isText(const string& filename) {
+    if(filename.length() < 5) {
+        return false;
+    } 
+    string fileType = ".txt";
+    string extension = filename.substr(filename.length()-4);
+    
+    return (extension == fileType);
+}
+
+bool fileExists(const string& filename) {
+    ifstream file(filename);
+    return file.good();
+}
+
 // Function to read characters from a file into an integer vector
 vector<int> readFile(const string& filename) {
     vector<int> data;
@@ -74,7 +89,7 @@ int readKey(const vector<int>vec_key) {
     for(int element: vec_key) {
         key += element;
     }
-    return key;
+    return key % 1000;
 }
 
 // Function to perform encryption
@@ -100,21 +115,21 @@ vector<int> encrypt(vector<int> message, vector<int> vec_key) {
     }
     // Swapping the boxes
     unsigned int count = 0;
-    while(count < pre_encrypt2.size() - 1) {
+    while(count < pre_encrypt2.size() - 2) {
         swap(pre_encrypt2[count], pre_encrypt2[count+1]);
         count += 2;
     }
 
     // Backward rotation 1
-    if (pre_encrypt1.size() % arraySize != 0) {
+    //if (pre_encrypt1.size() % arraySize != 0) {
         rotate(pre_encrypt2.rbegin(), pre_encrypt2.rbegin() + 1, pre_encrypt2.rend());
-    }
+    //}
 
     // Letting zero coming first
     if(pre_encrypt1.size() % 3 == 1) {
-        rotate(pre_encrypt2[0].rbegin(), pre_encrypt2[0].rbegin() + 1, pre_encrypt2[0].rend());
-    } else if (pre_encrypt1.size() % 3 == 2) {
         rotate(pre_encrypt2[0].rbegin(), pre_encrypt2[0].rbegin() + 2, pre_encrypt2[0].rend());
+    } else if (pre_encrypt1.size() % 3 == 2) {
+        rotate(pre_encrypt2[0].rbegin(), pre_encrypt2[0].rbegin() + 1, pre_encrypt2[0].rend());
     }
     
     // Store rotated 2Dvector into 1D integer vector
@@ -142,19 +157,19 @@ vector<int> decrypt(const vector<int>& encrypted, const vector<int>& vec_key) {
     
     // Undo the zero rotation
     if (encrypted.size() % 3 == 1) {
-        rotate(pre_decrypt[0].begin(), pre_decrypt[0].begin() + 1, pre_decrypt[0].end());
-    } else if (encrypted.size() % 3 == 2) {
         rotate(pre_decrypt[0].begin(), pre_decrypt[0].begin() + 2, pre_decrypt[0].end());
+    } else if (encrypted.size() % 3 == 2) {
+        rotate(pre_decrypt[0].begin(), pre_decrypt[0].begin() + 1, pre_decrypt[0].end());
     }
 
     // Undo the backward rotation
-    if (encrypted.size() % arraySize != 0) {
+    //if (encrypted.size() % arraySize != 0) {
         rotate(pre_decrypt.begin(), pre_decrypt.begin() + 1, pre_decrypt.end());
-    }
+    //}
 
     // Undo the box swapping
     unsigned int count = 0;
-    while (count < pre_decrypt.size() - 1) {
+    while (count < pre_decrypt.size() - 2) {
         swap(pre_decrypt[count], pre_decrypt[count + 1]);
         count += 2;
     }
@@ -194,11 +209,19 @@ int main() {
         if (choice == 1) {
             string inputFile, keyFile, outputFile;
             cout << "Enter message file name: ";
-            cin >> inputFile;
+            cin >> inputFile;           
             cout << "Enter key file name: ";
             cin >> keyFile;
             cout << "Enter cipher file name: ";
             cin >> outputFile;
+            if(!isText(inputFile) || !isText(keyFile) || !isText(outputFile)) {
+                cerr << "Please choose file type 'txt'.\n";
+                continue;
+            }
+            if (fileExists(outputFile)) {
+                cout << "Error: The cipher file '" << outputFile << "' already exists. Please choose a different name.\n";
+                continue;
+            }
 
             vector<int> plainText = readFile(inputFile);
             vector<int> key = readFile(keyFile);
@@ -213,6 +236,14 @@ int main() {
             cin >> keyFile;
             cout << "Enter output file name: ";
             cin >> outputFile;
+            if(!isText(encryptedFile) || !isText(keyFile) || !isText(outputFile)) {
+                cerr << "Please choose file type txt.\n";
+                continue;
+            }
+            if (fileExists(outputFile)) {
+                cout << "Error: The output file '" << outputFile << "' already exists. Please choose a different name.\n";
+                continue;
+            }
 
             vector<int> pre_encrypt2 = readFile(encryptedFile);
             vector<int> key = readFile(keyFile);
