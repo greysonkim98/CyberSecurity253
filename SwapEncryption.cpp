@@ -19,7 +19,7 @@
 //  Date of last update: 2024-09-30
 //  Date of reorganization of comments: 2024-09-30
 //  Files in this program: SwapEncryption.cpp
-//  Developed OS: Ubuntu 24.04.1 LTS
+//  Developed OS: Microsoft Windows 11 Home
 //  Tested OS Name: Microsoft Windows 11 Home
 //  Tested OS Version: 10.0.22631 N/A Build 22631
 //  Tested Compiler: g++.exe (Rev1, Built by MSYS2 project) 14.2.0
@@ -123,7 +123,7 @@ vector<int> encrypt(vector<int> message, vector<int> vec_key) {
     // Backward rotation 1
     //if (pre_encrypt1.size() % arraySize != 0) {
         rotate(pre_encrypt2.rbegin(), pre_encrypt2.rbegin() + 1, pre_encrypt2.rend());
-    //}
+    //}O
 
     // Letting zero coming first
     if(pre_encrypt1.size() % 3 == 1) {
